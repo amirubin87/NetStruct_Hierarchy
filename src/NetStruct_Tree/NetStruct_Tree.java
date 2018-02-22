@@ -1,10 +1,17 @@
+package NetStruct_Tree;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 
 //TODO - color the help msg
 //TODO - add more to the log
@@ -34,7 +41,8 @@ public class NetStruct_Tree {
 		null
 		};
 	public static void main(String[] args) throws Exception {
-		singleRun(args);
+		MergeComms.chiTestCheck();
+		//singleRun(args);
 	}
 	
 	public static void singleRun(String[] args) throws Exception {		
@@ -47,7 +55,10 @@ public class NetStruct_Tree {
 			System.out.println(UserHelpUtil.paramMsg);
 			return;
 		}
-		if (!debug)	populateVarValues(args);
+		if(!debug && args[0].equals("-demo")){			
+			dummy=true;			
+		}
+		if (!debug & !dummy)	populateVarValues(args);
 		double stepSize =  Double.parseDouble(varValues[0]); 
 		boolean dynamicChoose =  Boolean.parseBoolean(varValues[1]);
 		boolean useModularityAsDefaultMetric =  Boolean.parseBoolean(varValues[2]);
@@ -77,11 +88,15 @@ public class NetStruct_Tree {
 			pathToRootOutputDir = pathToRootOutputDir+"Weighted_" + useWeighted + "_Dynamic_" + dynamicChoose + "_minSize_" + minSizeOfCommToBrake + "_StepSize_" + stepSize + "_Beta_" + beta +  "/";
 		}
 		if(dummy){			
-			stepSize = 0.01;
-			pathToRootOutputDir = "C:/Genes/DUMMYStepSize_" + stepSize + "_Beta_" + beta + "_DynamicChoose_" + dynamicChoose + "_minSizeOfCommToBrake_" + minSizeOfCommToBrake + "/";
-			pathToMatrixFile = "C:/Genes/Data/all_rescaled_matrices/DUMMYAll_chrome_M.txt";
-			pathToMapNode2SampleSite = "C:/Genes/Data/DUMMYindlist.txt";
-			pathToSampleSites = "C:/Genes/Data/DummySampleSites.txt";
+			stepSize = 0.01;			
+			pathToRootOutputDir = "./sample/DUMMYStepSize_" + stepSize + "_Beta_" + beta + "_DynamicChoose_" + dynamicChoose + "_minSizeOfCommToBrake_" + minSizeOfCommToBrake + "/";
+			deleteDirectory(pathToRootOutputDir);
+			pathToMatrixFile = "./sample/DUMMY_All_chrome_M.txt";
+			Common.writeToFile(pathToMatrixFile, UserHelpUtil.DUMMY_All_chrome_M);
+			pathToMapNode2SampleSite = "./sample/DUMMY_indlist.txt";
+			Common.writeToFile(pathToMapNode2SampleSite, UserHelpUtil.DUMMY_indlist);
+			pathToSampleSites = "./sample/DUMMY_SampleSites.txt";
+			Common.writeToFile(pathToSampleSites, UserHelpUtil.DUMMY_SampleSites);
 			minSizeOfCommToBrake=2;
 			minSizeOfCommToOutput=2;
 		}
@@ -214,6 +229,25 @@ public class NetStruct_Tree {
 				
 	}
 
+	private static void deleteDirectory(String dir) throws IOException {
+		Path directory = Paths.get(dir);
+		if (Files.exists(directory)){
+		Files.walkFileTree(directory, new SimpleFileVisitor<Path>() {
+		   @Override
+		   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+		       Files.delete(file);
+		       return FileVisitResult.CONTINUE;
+		   }
+
+		   @Override
+		   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+		       Files.delete(dir);
+		       return FileVisitResult.CONTINUE;
+		   }
+		});
+		}		
+	}
+
 	private static void populateVarValues(String[] args) {
 		int length = args.length;
 		for (int i = 0; i < length; i=i+2) {
@@ -229,5 +263,7 @@ public class NetStruct_Tree {
 			}
 			if(!foundFlag) throw new InputMismatchException("Bad input for NetStruct_Tree. The flag:"+flag + " is not found. Use -h to see available flags.");
 		}		
-	}		
+	}
+	
+	
 }

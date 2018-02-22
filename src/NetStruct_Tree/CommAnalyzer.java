@@ -1,3 +1,4 @@
+package NetStruct_Tree;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -16,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.management.RuntimeErrorException;
 
 public class CommAnalyzer {	
 	

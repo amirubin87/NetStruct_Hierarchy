@@ -1,3 +1,4 @@
+package NetStruct_Tree;
 public class Person {
 	public final int id;
 	public final SampleSite sampleSite;

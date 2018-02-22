@@ -1,6 +1,8 @@
+package NetStruct_Tree;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,36 +14,15 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 public class Common {
 	
-	/*
-	 * public static void WriteCommAnalysisToFile(List<CommId> comms, CommAnalyzer commAnalyzer, String pathS) throws IOException {
-		Path path = Paths.get(pathS);	    	    
-		
-		int prevLevel=-1;
-		for (CommId commId : comms){
-			String commLine ="";
-			int commSize = commId.GetNodes().size();
-			if(commSize>20){
-				int commLevel = commId.level;
-				if (commLevel>prevLevel){
-					Files.write(path, Arrays.asList(" ----------- LEVEL " + commLevel + " ----------- "), StandardCharsets.UTF_8, Files.exists(path) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE);					
-					prevLevel = commLevel;
-				}
-				Map<String,Integer> mapCodeToCount = commAnalyzer.perCodeCounts(commId);
-				commLine = commLine + "Size_" + String.format("%04d", commSize) + "_" + commId.toString() + "\t";			
-				
-				for(String[] codesArray : commAnalyzer.codes){
-					commLine = commLine + "|";
-					
-					for(String code : codesArray){
-						commLine = commLine + code + ":" + mapCodeToCount.get(code) + "\t";					
-					}
-				}
-				
-				
-			}	
-			Files.write(path, Arrays.asList(commLine), StandardCharsets.UTF_8, StandardOpenOption.APPEND);
-		}
-	}*/
+	public static void writeToFile(String fileName, String str) 
+			  throws IOException {	
+				File file = new File(fileName);
+				file.getParentFile().mkdirs();
+				FileWriter writer = new FileWriter(file);			    
+			    writer.write(str);			     
+			    writer.close();
+	}
+	
 	public static String greatestCommonPrefix(String a, String b) {
 	    int minLength = Math.min(a.length(), b.length());
 	    for (int i = 0; i < minLength; i++) {

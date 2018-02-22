@@ -1,3 +1,4 @@
+package NetStruct_Tree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,9 +10,9 @@ import org.apache.commons.math3.stat.inference.ChiSquareTest;
 public class MergeComms {	
 	
 	// Starting from root (level 0). 
-	// Each community looks at its childrens. 
+	// Each community looks at its children. 
 	// If (according to ChiSquare test) a child is similar to the parent, he is removed.
-	// The child's childrens become the parents childrend.
+	// The child's children become the parent's children.
 	public static Map<CommId,Map<String,Integer>> MergeCommsByPVal(CommId root, Map<CommId,Map<String,Integer>> mapCommToMapCodeToCount, double pVal) {
 		Map<CommId,Map<String,Integer>> ans = new HashMap<CommId, Map<String,Integer>>();
 		List<CommId> commsToInspectCurrentLevel = new ArrayList<CommId>();
@@ -138,15 +139,9 @@ public class MergeComms {
 		// Size_0091_|BEB:6	GIH:1	ITU:53	PJL:2	STU:29	|
 		// Size_0044_|BEB:5	GIH:0	ITU:33	PJL:1	STU:5	|
 		// 0.04162
-		long[] expected = new long[] {54};		
-		long[] observed = new long[]     {92};
-		System.out.println("3.1 gili merged, amir didnt");
-		System.out.println(chiTestWrapper(expected, observed));
-		//Size_0026_||BEB:0	GIH:0	ITU:10	PJL:0	STU:16	|
-		//0.0214
-		expected = new long[] {6,1,53,2,29};		
-		observed = new long[]     {0,0,10,0,16};
-		System.out.println("3.2  gili merged, amir didnt");				
+		long[] expected = new long[] {8,8};		
+		long[] observed = new long[]     {8,0};
+		System.out.println(chiTestWrapper(expected, observed));				
 		
 	}
 	

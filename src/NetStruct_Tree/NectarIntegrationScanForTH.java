@@ -1,3 +1,4 @@
+package NetStruct_Tree;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -117,7 +118,7 @@ public class NectarIntegrationScanForTH {
 	}
 
 	private static void runNectar(String pathToFileForNecter, String pathToWorkingDir, String betas, Boolean shouldUseModularity, int nectarVerboseLevel) throws Exception {
-		String shouldUseModularityS = shouldUseModularity ? "true" : "false";
+		/*String shouldUseModularityS = shouldUseModularity ? "true" : "false";
 		String[]args = {
 				pathToFileForNecter
 				, pathToWorkingDir
@@ -133,6 +134,7 @@ public class NectarIntegrationScanForTH {
 				, "false" //useConductance
 				, "" + nectarVerboseLevel // verbose
 				};
+				*/
 		// TODO - add "minAmountOfIterationsToRun"
 		// TODO - output sorted nodes!
 		//NECTAR_Beta.RunNectar_Joined.main(args);
@@ -185,7 +187,7 @@ public class NectarIntegrationScanForTH {
 
 	public static boolean ShouldUseModularity(CommId comm, boolean useModularityAsDefaultMetric) throws Exception {
 		
-		String pathToFileForNecter = comm.edgesFileName;
+		// String pathToFileForNecter = comm.edgesFileName;
 		// if k>50 use WOCC. So, if E > N*50/2 => WOCC
 		int N = comm.GetNodes().size();
 		int E = comm.GetEdges().size();		
