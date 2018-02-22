@@ -40,9 +40,8 @@ public class NetStruct_Tree {
 		"false",
 		null
 		};
-	public static void main(String[] args) throws Exception {
-		MergeComms.chiTestCheck();
-		//singleRun(args);
+	public static void main(String[] args) throws Exception {		
+		singleRun(args);
 	}
 	
 	public static void singleRun(String[] args) throws Exception {		
