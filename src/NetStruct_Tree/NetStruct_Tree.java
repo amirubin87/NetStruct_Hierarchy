@@ -204,7 +204,8 @@ public class NetStruct_Tree {
 		Common.writeToLog(pathToLog, "\t\tDone with WriteCommAnalysisToFile. Output: " + pathToMergedCommAnalysisFile +"\n",debug);
 		
 		// Calculate F1 score between the sample sites.
-		Map<String, SampleSite> sampleSites = commAnalyzer.InitSampleSites();
+		
+		/*Map<String, SampleSite> sampleSites = commAnalyzer.InitSampleSites();
 		Common.writeToLog(pathToLog, "\t\tDone with InitSampleSites\n",debug);
 		commAnalyzer.SetPathFromRootToAll(sampleSites, mapMergedCommToMapCodeToCount.keySet());
 		Common.writeToLog(pathToLog, "\t\tDone with SetPathFromRootToAll\n",debug);
@@ -217,6 +218,7 @@ public class NetStruct_Tree {
 		String pathToStructureFile = pathToOutputDir + "5_Structure_LeafSizes-" + useLeafSizesForStructure + "_proportional-" + useProportionalTreeSplitsForStructure +"_"+ inputFileName + "_dynamic-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfComm-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";
 		commAnalyzer.WriteStructureOutputToFile(rootComm, mapMergedCommToMapCodeToCount.keySet(), pathToStructureFile, minSizeOfCommToOutput, useLeafSizesForStructure, useProportionalTreeSplitsForStructure);
 		Common.writeToLog(pathToLog, "\t\tDone with WriteStructureOutputToFile: " + pathToStructureFile +"\n",debug);
+		*/
 		
 		// Output leafs for NMI - commAnalyzer holds all the data needed - it was calculated in WriteStructureOutputToFile  
 		String pathToLeafsNoOverlapFile = pathToOutputDir + "6_Leafs_NoOverlap.txt";
