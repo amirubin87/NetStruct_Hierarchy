@@ -182,8 +182,8 @@ public class NetStruct_Tree {
 		Map<CommId,Map<String,Integer>> mapCommToMapCodeToCount = commAnalyzer.commsToMapSampleSiteToCount(comms);
 		commAnalyzer.WriteStructureOutputToFile(rootComm, mapCommToMapCodeToCount.keySet(), "", minSizeOfCommToOutput, useLeafSizesForStructure, useProportionalTreeSplitsForStructure);		
 		Common.writeToLog(pathToLog, "\t\tDone with WriteStructureOutputToFile without output\n",debug);
-		String pathToLeafsBeforeMergeNoOverlapFile = pathToOutputDir + "2_Leafs_BeforeMerge_NoOverlap.txt";
-		String pathToLeafsBeforeMergeWithOverlapFile = pathToOutputDir + "2_Leafs_BeforeMerge_WithOverlap.txt";
+		String pathToLeafsBeforeMergeNoOverlapFile = pathToOutputDir + "2_Leafs_NoOverlap.txt";
+		String pathToLeafsBeforeMergeWithOverlapFile = pathToOutputDir + "2_Leafs_WithOverlap.txt";
 		commAnalyzer.LeafsAsCommunities();	
 		commAnalyzer.WriteLeafsNoOverlapAsCommunitiesToFile(pathToLeafsBeforeMergeNoOverlapFile);
 		commAnalyzer.WriteLeafsWithOverlapAsCommunitiesToFile(pathToLeafsBeforeMergeWithOverlapFile);
@@ -195,14 +195,14 @@ public class NetStruct_Tree {
 		 *  TODO - when !@skipBrakeComms, we hold in @comms all comms, including those smaller than @minCommSizrToOutput.
 		 *  We dont need to check them for merge, as they wont be outputed...
 		 */
-		String pathToMergedCommAnalysisFile = pathToOutputDir + "3_MergedCommAnalysis_" + inputFileName + "_dynamicChoose-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfCommToBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";			
+		/* String pathToMergedCommAnalysisFile = pathToOutputDir + "3_MergedCommAnalysis_" + inputFileName + "_dynamicChoose-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfCommToBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";			
 			
 		Common.writeToLog(pathToLog, "\t\tDone with CommsToMapCodeToCount\n",debug);
 		Map<CommId,Map<String,Integer>> mapMergedCommToMapCodeToCount = MergeComms.MergeCommsByPVal(rootComm, mapCommToMapCodeToCount, 0.05);
 		Common.writeToLog(pathToLog, "\t\tDone with MergeCommsByPVal.\n",debug);
 		commAnalyzer.WriteCommAnalysisToFile(mapMergedCommToMapCodeToCount, pathToMergedCommAnalysisFile);
 		Common.writeToLog(pathToLog, "\t\tDone with WriteCommAnalysisToFile. Output: " + pathToMergedCommAnalysisFile +"\n",debug);
-		
+		*/
 		// Calculate F1 score between the sample sites.
 		
 		/*Map<String, SampleSite> sampleSites = commAnalyzer.InitSampleSites();
@@ -221,12 +221,13 @@ public class NetStruct_Tree {
 		*/
 		
 		// Output leafs for NMI - commAnalyzer holds all the data needed - it was calculated in WriteStructureOutputToFile  
-		String pathToLeafsNoOverlapFile = pathToOutputDir + "6_Leafs_NoOverlap.txt";
+		/*String pathToLeafsNoOverlapFile = pathToOutputDir + "6_Leafs_NoOverlap.txt";
 		String pathToLeafsWithOverlapFile = pathToOutputDir + "6_Leafs_WithOverlap.txt";
 		commAnalyzer.LeafsAsCommunities();		
 		commAnalyzer.WriteLeafsNoOverlapAsCommunitiesToFile(pathToLeafsNoOverlapFile);
 		commAnalyzer.WriteLeafsWithOverlapAsCommunitiesToFile(pathToLeafsWithOverlapFile);
 		Common.writeToLog(pathToLog, "\t\tDone with WriteLeaf AfterMerge AsCommunitiesToFile\n",debug);
+		*/
 				
 	}
 
