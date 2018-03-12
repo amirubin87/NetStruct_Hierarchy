@@ -8,11 +8,11 @@ See the "Matrix joiner" section in the end for merging these matrixes.
 Parameters are:
 inputFile outputFolder windowSize windowIndex shuffeledFile totalSnps totalIndividuals
 parmas:
-    inputFile - path to file with genetics data - in each line i all of the individuals alleles at loci i.
+    inputFile - path to file with genetics data - in each line i all of the individuals alleles at loci i. The format is - space seperating each locus, comma seperating the alleles
     outputFolder - path to folder in which we write outputs
     totalSnps - the number of snps in the inputFile
     totalIndividuals - the number of individuals in the inputFile
-    allelesString - each character in the string is a symbol of an allele in the input data
+    allelesString - comma seperated symbols. Each symbol in the string is a symbol of an allele in the input data
     alleleMissingValueChar - the character representing a missing value
 
     *** for parallel execution ***
@@ -94,34 +94,34 @@ def writeCountsToFile(defaultAmount,counts,countsPath):
             for j in counts.get(i).keys():
                 f.write(str(i)+','+str(j)+','+str(counts.get(i).get(j))+'\n')
 
-def writeDistributionPerLocusToFile(distributionPerLocus, distributionPerLocusPath):
-    numOfLoci = len(distributionPerLocus.items())
-    makeDirs(distributionPerLocusPath)
-    with open(distributionPerLocusPath, "w") as f:
+def writeFrequenciesPerLocusToFile(frequenciesPerLocus, frequenciesPerLocusPath):
+    numOfLoci = len(frequenciesPerLocus.items())
+    makeDirs(frequenciesPerLocusPath)
+    with open(frequenciesPerLocusPath, "w") as f:
         wrCsv = csv.writer(f, lineterminator='\n')
         for l in range(0, numOfLoci):
             #except list.
-            wrCsv.writerow(distributionPerLocus.get(l))
+            wrCsv.writerow(frequenciesPerLocus.get(l))
 
-def readDistributionPerLocusFile(distributionPerLocusPath):
-    distributionPerLocus = dict()
-    with open(distributionPerLocusPath) as f:
+def readFrequenciesPerLocusFile(frequenciesPerLocusPath):
+    frequenciesPerLocus = dict()
+    with open(frequenciesPerLocusPath) as f:
         lis=[line.replace('\n','').split(',') for line in f]    # create a list of lists
         for i,x in enumerate(lis):
             y = []
             for c in x:
                 y.append(int(c))
-            distributionPerLocus[i] = y
-    return distributionPerLocus
+            frequenciesPerLocus[i] = y
+    return frequenciesPerLocus
 
 #********************************************************************
 # Sum the non missing entries at locus l
 #********************************************************************
-def nonMissingEntiresAtLocus(distributionPerLocus, l):
+def nonMissingEntiresAtLocus(frequenciesPerLocus, l):
     ans = 0
     # the lsat entry is the amount of missing ones
-    for i in range(len(distributionPerLocus[l])-1):
-        ans += distributionPerLocus[l][i]
+    for i in range(len(frequenciesPerLocus[l])-1):
+        ans += frequenciesPerLocus[l][i]
     return ans
 
 #********************************************************************
@@ -152,25 +152,49 @@ def readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnp
     return ExtractWindow(allelesToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar)
 
 #********************************************************************
-# Extracting the window when the input schema is: in each line i we have all of the individuals alleles at loci i.
+# Extracting the window when the input schema is: in each line i we have all of the alleles of individual i.
 #********************************************************************
-def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar):
+def ExtractWindowPivoted(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar):
+    alleleSymbols = allelesString.split(',')
     fp = open(inputFile, 'r')
     lociCounter = 0
     for i, line in enumerate(fp):
         if i in allelsToUse:
             parts = line.split()
             for indi in range(0, totalIndividuals):
-                value = parts[indi]
-                # missing value
-                if (value[0] == alleleMissingValueChar) or (value[1] == alleleMissingValueChar):
+                alleles = parts[indi].split(',')
+                # missing value                
+                if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):
                     val1 = -1
                     val2 = -1
                 else:
-                    val1 = allelesString.index(value[0])
-                    val2 = allelesString.index(value[1])
+                    val1 = alleleSymbols.index(alleles[0])
+                    val2 = alleleSymbols.index(alleles[1])
                 window[indi][lociCounter] = [val1, val2]
             lociCounter = lociCounter + 1
+    fp.close()
+    return window
+    
+#********************************************************************
+# Extracting the window when the input schema is: in each line i we have all of the individuals alleles at loci i.
+#********************************************************************
+def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar):
+    alleleSymbols = allelesString.split(',')
+    fp = open(inputFile, 'r')
+    for indi, line in enumerate(fp):
+        if len(line)>2:
+            parts = line.split()
+            for i in range(len(parts)):
+                if i in allelsToUse:
+                    alleles = parts[i].split(',')
+                    # missing value
+                    if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):
+                        val1 = -1
+                        val2 = -1
+                    else:
+                        val1 = alleleSymbols.index(alleles[0])
+                        val2 = alleleSymbols.index(alleles[1])
+                    window[indi][i] = [val1, val2]                
     fp.close()
     return window
 
@@ -178,23 +202,23 @@ def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesStrin
 #********************************************************************
 #********************************************************************
 #
-#                Distance and distribution calculations
+#                Distance and frequencies calculations
 #
 #********************************************************************
 #********************************************************************
 #********************************************************************
 
 #********************************************************************
-# For each locus in the given @window, we calc the distribution of each allele.
+# For each locus in the given @window, we calc the frequencies of each allele.
 #********************************************************************
-def calcDistributionPerLocus(window, logFile, allelesString):
+def calcFrequenciesPerLocus(window, logFile, allelesString):
     # +1 for the missing value option
     numOfAlleles = len(allelesString)+1
     size= len(window.get(0).keys())
-    distributionPerLocus = dict()
+    frequenciesPerLocus = dict()
     for l in range(0,size):
         if l%max(1,int(size/100)) ==0:
-            writeToLog('calcDistributionPerLocus finished ' + str(l) + ' out of ' + str(size), logFile)
+            writeToLog('calcFrequenciesPerLocus finished ' + str(l) + ' out of ' + str(size), logFile)
         counts = [0]*numOfAlleles
         for i,val in window.items():
             snp = val.get(l)
@@ -206,13 +230,13 @@ def calcDistributionPerLocus(window, logFile, allelesString):
                 counts[indexToIncrement] = counts[indexToIncrement] + 1
                 indexToIncrement = snp[1]
                 counts[indexToIncrement] = counts[indexToIncrement] + 1
-        distributionPerLocus[l] = counts
-    return distributionPerLocus
+        frequenciesPerLocus[l] = counts
+    return frequenciesPerLocus
 
 #********************************************************************
-# Calculates the distance between two individuals based on the given @distributionPerLocus
+# Calculates the distance between two individuals based on the given @frequenciesPerLocus
 #********************************************************************
-def calcDistancesBetweenTwo(i, j, distributionPerLocus):
+def calcDistancesBetweenTwo(i, j, frequenciesPerLocus):
     dist = 0
     valid=0
     for l in i.keys():
@@ -228,16 +252,16 @@ def calcDistancesBetweenTwo(i, j, distributionPerLocus):
             Ibc = 1 if(b==c) else 0
             Ibd = 1 if(b==d) else 0
             # guard rail - we wont divide by 0
-            nonMissingEntires = max(1, nonMissingEntiresAtLocus(distributionPerLocus,l))
-            f_a = float(distributionPerLocus[l][a])/nonMissingEntires
-            f_b = float(distributionPerLocus[l][b])/nonMissingEntires
+            nonMissingEntires = max(1, nonMissingEntiresAtLocus(frequenciesPerLocus,l))
+            f_a = float(frequenciesPerLocus[l][a])/nonMissingEntires
+            f_b = float(frequenciesPerLocus[l][b])/nonMissingEntires
             dist = dist+ 0.25*((1-f_a)*(Iac+Iad) +(1-f_b)*(Ibc+Ibd))
     return (dist,valid)
 
 #********************************************************************
-# Calcs the distance between any two individuals in the given @window based on the given @distributionPerLocus
+# Calcs the distance between any two individuals in the given @window based on the given @frequenciesPerLocus
 #********************************************************************
-def calcDistances(window, distributionPerLocus, logFile):
+def calcDistances(window, frequenciesPerLocus, logFile):
     allDist = dict()
     allValids = dict()
     numOfIndividuals = len(window.keys())
@@ -248,7 +272,7 @@ def calcDistances(window, distributionPerLocus, logFile):
         allDist[i] = dict()
         for j in window.keys():
             if (i<j):
-                S_ij,C_ij = calcDistancesBetweenTwo(window.get(i),window.get(j),distributionPerLocus)
+                S_ij,C_ij = calcDistancesBetweenTwo(window.get(i),window.get(j),frequenciesPerLocus)
                 allDist[i][j] = S_ij
                 if C_ij<numOfGenes:
                     if allValids.get(i) is None:
@@ -268,7 +292,7 @@ def calcDistances(window, distributionPerLocus, logFile):
 
 def main(inputVector):
     if len(inputVector)<7:
-        print "Required input is: inputFile outputFolder totalSnps totalIndividuals allelesString alleleMissingValueChar"
+        print ("Required input is: inputFile outputFolder totalSnps totalIndividuals allelesString alleleMissingValueChar")
         return
     # parse command line options
 
@@ -317,20 +341,20 @@ def main(inputVector):
 
     window =readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnps, totalIndividuals, allelesString, alleleMissingValueChar)
 
-    # Step A - distribution per locus.
+    # Step A - frequencies per locus.
     # For DR reasons - we check if the file exists.
-    distributionPerLocusPath = outputFolder + "Distributions/" + str(windowSize) + "_" + str(windowIndex) + ".csv"
+    frequenciesPerLocusPath = outputFolder + "Frequenciess/" + str(windowSize) + "_" + str(windowIndex) + ".csv"
 
-    if os.path.isfile(distributionPerLocusPath):
+    if os.path.isfile(frequenciesPerLocusPath):
         # file exists
-        distributionPerLocus = readDistributionPerLocusFile(distributionPerLocusPath)
+        frequenciesPerLocus = readFrequenciesPerLocusFile(frequenciesPerLocusPath)
     else:
-        distributionPerLocus = calcDistributionPerLocus(window, logFile, allelesString)
+        frequenciesPerLocus = calcFrequenciesPerLocus(window, logFile, allelesString)
 
-        writeDistributionPerLocusToFile(distributionPerLocus,distributionPerLocusPath)
+        writeFrequenciesPerLocusToFile(frequenciesPerLocus,frequenciesPerLocusPath)
 
     # Step B - distances between individuals
-    distances,counts = calcDistances(window,distributionPerLocus, logFile)
+    distances,counts = calcDistances(window,frequenciesPerLocus, logFile)
 
     writeDistancesToFile(distances,distancesPath)
     writeCountsToFile(len(window.values()[0].keys()),counts,countsPath)

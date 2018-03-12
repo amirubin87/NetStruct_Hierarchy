@@ -1,3 +1,4 @@
-AB AT AD AD
-AA AB AT AC
-CG AA CB AD
+A,B A,A C,G
+A,T A,B A,A
+A,D A,T C,B
+A,D N,C A,D
