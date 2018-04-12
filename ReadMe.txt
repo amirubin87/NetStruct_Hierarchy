@@ -1,6 +1,6 @@
 
 ******************************************
-       Welcome to NetStruct_Tree!
+       Welcome to NetStruct_Hierarchy!
 ******************************************
 
 ---   This program will break a dense network to communities, in an hirarcial manner.
@@ -77,7 +77,7 @@ Level_#_Entry_#_ParentLevel_#_ParentEntry_#_ParentLine_#_TH__Edges.txt -
                  a list of edges in the given level and entry.
 
 
-Input parameteres for NetStruct_Tree:
+Input parameteres for NetStruct_Hierarchy:
 stepSize = 0.0001
 dynamicChoose = false
 useModularityAsDefaultMetric = true
@@ -98,4 +98,4 @@ useProportionalTreeSplitsForStructure = false
 pathToIndividulasToExclude = null
 
  For your use - a sample full command line:
-java -jar NetStruct_Tree_v1.jar -ss 0.0001 -dy true -mod true -minb 20 -mino 20 -b 1.0 -pro C:/Data/ -skip false -pca placeholder -pm C:/Data/Matrix.txt -pe placeholder -pmn C:/Data/indlist.txt -pss C:/Data/SampleSites.txt -nvl 0 -w true -ls false -pts false -indtoex placeholder
+java -jar NetStruct_Hierarchy_v1.jar -ss 0.0001 -dy true -mod true -minb 20 -mino 20 -b 1.0 -pro C:/Data/ -skip false -pca placeholder -pm C:/Data/Matrix.txt -pe placeholder -pmn C:/Data/indlist.txt -pss C:/Data/SampleSites.txt -nvl 0 -w true -ls false -pts false -indtoex placeholder
