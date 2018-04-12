@@ -173,7 +173,7 @@ public class CommAnalyzer {
 		for (Entry<Integer, String> IdSampleSite : mapNode2SampleSite.entrySet()){
 			SampleSite sampleSite = sampleSites.get(IdSampleSite.getValue());
 			Integer id = IdSampleSite.getKey();
-			sampleSite.members.put(id, new Person(id, sampleSite));
+			sampleSite.members.put(id, new Individual(id, sampleSite));
 		}		
 		return sampleSites;
 	}

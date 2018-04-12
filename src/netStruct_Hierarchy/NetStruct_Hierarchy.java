@@ -181,13 +181,13 @@ public class NetStruct_Hierarchy {
 		 */		
 		Map<CommId,Map<String,Integer>> mapCommToMapCodeToCount = commAnalyzer.commsToMapSampleSiteToCount(comms);
 		commAnalyzer.WriteStructureOutputToFile(rootComm, mapCommToMapCodeToCount.keySet(), "", minSizeOfCommToOutput, useLeafSizesForStructure, useProportionalTreeSplitsForStructure);		
-		Common.writeToLog(pathToLog, "\t\tDone with WriteStructureOutputToFile without output\n",debug);
+		Common.writeToLog(pathToLog, "\t\tDone with Write Structure Output To File without output\n",debug);
 		String pathToLeafsBeforeMergeNoOverlapFile = pathToOutputDir + "2_Leafs_NoOverlap.txt";
 		String pathToLeafsBeforeMergeWithOverlapFile = pathToOutputDir + "2_Leafs_WithOverlap.txt";
 		commAnalyzer.LeafsAsCommunities();	
 		commAnalyzer.WriteLeafsNoOverlapAsCommunitiesToFile(pathToLeafsBeforeMergeNoOverlapFile);
 		commAnalyzer.WriteLeafsWithOverlapAsCommunitiesToFile(pathToLeafsBeforeMergeWithOverlapFile);
-		Common.writeToLog(pathToLog, "\t\tDone with WriteLeafs BeforeMerge AsCommunitiesToFile\n",debug);
+		Common.writeToLog(pathToLog, "\t\tDone with Write Leafs As Communities To File\n",debug);
 						
 		/*
 		 * 				3

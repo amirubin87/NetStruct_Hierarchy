@@ -136,11 +136,8 @@ public class MergeComms {
 	}
 
 	public static void chiTestCheck(){
-		// Size_0091_|BEB:6	GIH:1	ITU:53	PJL:2	STU:29	|
-		// Size_0044_|BEB:5	GIH:0	ITU:33	PJL:1	STU:5	|
-		// 0.04162
 		long[] expected = new long[] {8,8};		
-		long[] observed = new long[]     {8,0};
+		long[] observed = new long[] {8,0};
 		System.out.println(chiTestWrapper(expected, observed));				
 		
 	}

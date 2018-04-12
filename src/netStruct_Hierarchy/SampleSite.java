@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class SampleSite {
 	public final String code;
-	public Map<Integer, Person> members;
+	public Map<Integer, Individual> members;
 	
 	public SampleSite(String code){
 		this.code = code;
@@ -41,7 +41,6 @@ public class SampleSite {
         return other.code == code;
     }
     
-    //Idea from effective Java : Item 9
     @Override
     public int hashCode() {
         int result = 17;
