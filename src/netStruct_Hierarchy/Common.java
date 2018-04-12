@@ -1,4 +1,4 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

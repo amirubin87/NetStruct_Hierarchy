@@ -1,4 +1,4 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 public class Person {
 	public final int id;
 	public final SampleSite sampleSite;

@@ -1,4 +1,4 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

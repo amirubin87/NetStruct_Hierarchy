@@ -1,4 +1,4 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;

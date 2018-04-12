@@ -1,4 +1,4 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 public class Edge {
 		public final Integer from;
 		public final Integer to;

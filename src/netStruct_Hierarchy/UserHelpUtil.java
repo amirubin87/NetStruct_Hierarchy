@@ -1,9 +1,9 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 
 public class UserHelpUtil {
 	public final static String helpMsg = 
 			"******************************************\n"
-			+"       Welcome to NetStruct_Tree! \n"
+			+"       Welcome to NetStruct_Hierarchy! \n"
 			+"******************************************\n\n"
 			+"---   This program will break a dense network to communities, in an hirarcial manner.\n"
 			+"---   The code can be found at TDOD. \n"
@@ -55,12 +55,12 @@ public class UserHelpUtil {
 			;
 	public final static String paramMsg = 
 			"******************************************\n"
-			+"       Welcom to NetStruct_Tree! \n"
+			+"       Welcom to NetStruct_Hierarchy! \n"
 			+"******************************************\n\n"
 			+ "Use -h to get full help.\n\n"			
 			+" Running the jar with a single param '-demo' will run a dummy sample, generating sample inputs and outputs in ./sample/ \n"			
 			+"\n\n"
-			+ "Input parameteres for NetStruct_Tree: \n"			
+			+ "Input parameteres for NetStruct_Hierarchy: \n"			
 			+ "stepSize = 0.0001 \n"
 			+ "dynamicChoose = false \n" 
 			+ "useModularityAsDefaultMetric = true \n" 
@@ -82,7 +82,7 @@ public class UserHelpUtil {
 			*/
 			+ "pathToIndividulasToExclude = null \n"
 			+ "\n For your use - a sample full command line: \n"
-			+ "java -jar NetStruct_Tree_v1.jar -ss 0.0001 -dy true -mod true -minb 3 -mino 3 -b 1.0"
+			+ "java -jar NetStruct_Hierarchy_v1.jar -ss 0.0001 -dy true -mod true -minb 3 -mino 3 -b 1.0"
 			+ " -pro C:/Data/ -skip false -pca placeholder -pm C:/Data/Matrix.txt"
 			+ " -pe placeholder -pmn C:/Data/indlist.txt -pss C:/Data/SampleSites.txt -nvl 0 -w true -indtoex placeholder\n";
 			

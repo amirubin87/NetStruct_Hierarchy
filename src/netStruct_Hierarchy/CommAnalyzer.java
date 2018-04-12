@@ -1,4 +1,4 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -1,4 +1,4 @@
-package NetStruct_Tree;
+package netStruct_Hierarchy;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -16,7 +16,7 @@ import java.util.Set;
 //TODO - color the help msg
 //TODO - add more to the log
 
-public class NetStruct_Tree {
+public class NetStruct_Hierarchy {
 	static boolean debug = false;
 	static boolean dummy = false;
 	static String[] varFlags = {"-ss","-dy","-mod","-minb","-mino","-b","-pro","-skip","-pca","-pm","-pe","-pmn","-pss","-nvl","-w","-ls","-pts","-indtoex"};
