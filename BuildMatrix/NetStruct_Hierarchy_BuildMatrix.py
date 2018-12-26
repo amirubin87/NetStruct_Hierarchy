@@ -89,7 +89,7 @@ def writeDistancesToFile(distances,output):
 def writeCountsToFile(defaultAmount,counts,countsPath):
     makeDirs(countsPath)
     with open(countsPath, "w") as f:
-        f.write('DefaultAmountOfGenes ' + str(defaultAmount) + '\n')
+        f.write('DefaultAmountOfSnps ' + str(defaultAmount) + '\n')
         for i in counts.keys():
             for j in counts.get(i).keys():
                 f.write(str(i)+','+str(j)+','+str(counts.get(i).get(j))+'\n')
@@ -140,10 +140,11 @@ def readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnp
         randomListFile = open(shuffeledFile,'r')
         randomList = randomListFile.readline().split(',')
     else:
+        # We use all the snps
         randomList = range(totalSnps)
     # We take the (random) alleles from the random list
     allelesToUse = randomList[startIndex:endIndex]
-    allelesToUse = map(int, allelesToUse)
+    allelesToUse = [int(x) for x in allelesToUse]
 
     window = dict()
     for indi in range(0,totalIndividuals):
@@ -214,15 +215,15 @@ def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesStrin
 #********************************************************************
 def calcFrequenciesPerLocus(window, logFile, allelesString):
     # +1 for the missing value option
-    numOfAlleles = len(allelesString)+1
-    size= len(window.get(0).keys())
+    numOfAlleles = len(allelesString.split(','))+1
+    numOfSnpsInWindow= len(window.get(0).keys())
     frequenciesPerLocus = dict()
-    for l in range(0,size):
-        if l%max(1,int(size/100)) ==0:
-            writeToLog('calcFrequenciesPerLocus finished ' + str(l) + ' out of ' + str(size), logFile)
+    for locus in range(0,numOfSnpsInWindow):
+        if locus%max(1,int(numOfSnpsInWindow/100)) ==0:
+            writeToLog('calcFrequenciesPerLocus finished ' + str(locus) + ' out of ' + str(numOfSnpsInWindow), logFile)
         counts = [0]*numOfAlleles
         for i,val in window.items():
-            snp = val.get(l)
+            snp = val[locus]
             # if any of the allele is -1, we wont count this SNP
             if(snp[0]==-1) or (snp[1] == -1):
                 counts[numOfAlleles-1] = counts[numOfAlleles-1] + 2
@@ -231,7 +232,7 @@ def calcFrequenciesPerLocus(window, logFile, allelesString):
                 counts[indexToIncrement] = counts[indexToIncrement] + 1
                 indexToIncrement = snp[1]
                 counts[indexToIncrement] = counts[indexToIncrement] + 1
-        frequenciesPerLocus[l] = counts
+        frequenciesPerLocus[locus] = counts
     return frequenciesPerLocus
 
 #********************************************************************
@@ -266,7 +267,7 @@ def calcDistances(window, frequenciesPerLocus, logFile):
     allDist = dict()
     allValids = dict()
     numOfIndividuals = len(window.keys())
-    numOfGenes= (len(window.values()[0].keys()))
+    numOfSnpsInWindow= (len(list(window.values())[0].keys()))
     for i in window.keys():
         if i%max(1,int(numOfIndividuals/100))==0:
             writeToLog('calcDistances finished ' + str(i) + ' out of ' + str(numOfIndividuals), logFile)
@@ -275,7 +276,7 @@ def calcDistances(window, frequenciesPerLocus, logFile):
             if (i<j):
                 S_ij,C_ij = calcDistancesBetweenTwo(window.get(i),window.get(j),frequenciesPerLocus)
                 allDist[i][j] = S_ij
-                if C_ij<numOfGenes:
+                if C_ij<numOfSnpsInWindow:
                     if allValids.get(i) is None:
                         allValids[i] = dict()
                     allValids[i][j] = C_ij
@@ -315,8 +316,9 @@ def main(inputVector):
     if len(inputVector)>9:
         shuffeledFile = inputVector[9]
 
-    '''
-    inputFile = "./Dummy_InputGenes.txt"
+
+    '''# can be used for adhoc runs
+    inputFile = "./SampleInputGenes.txt"
     outputFolder = "./sample/"
     windowSize = 3
     windowIndex = 0
@@ -324,9 +326,9 @@ def main(inputVector):
     totalSnps = 3
     totalIndividuals = 4
     # each character in the string is a symbol of an allele in the input data
-    allelesString = "ABDTCG" #"0123"
+    allelesString = 'A,B,C,D,T,G'
     # a single character to represent a missing value
-    alleleMissingValueChar = "N" #4
+    alleleMissingValueChar = 'N'
     '''
 
     #First check that the output file doesnt exist.
@@ -358,7 +360,7 @@ def main(inputVector):
     distances,counts = calcDistances(window,frequenciesPerLocus, logFile)
 
     writeDistancesToFile(distances,distancesPath)
-    writeCountsToFile(len(window.values()[0].keys()),counts,countsPath)
+    writeCountsToFile(len(list(window.values())[0].keys()),counts,countsPath)
 
 if __name__ == "__main__":
     main(sys.argv)
