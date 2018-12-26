@@ -139,7 +139,8 @@ def readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnp
     if(shuffeledFile!=""):
         randomListFile = open(shuffeledFile,'r')
         randomList = randomListFile.readline().split(',')
-    randomList = range(totalSnps)
+    else:
+        randomList = range(totalSnps)
     # We take the (random) alleles from the random list
     allelesToUse = randomList[startIndex:endIndex]
     allelesToUse = map(int, allelesToUse)
@@ -343,7 +344,7 @@ def main(inputVector):
 
     # Step A - frequencies per locus.
     # For DR reasons - we check if the file exists.
-    frequenciesPerLocusPath = outputFolder + "Frequenciess/" + str(windowSize) + "_" + str(windowIndex) + ".csv"
+    frequenciesPerLocusPath = outputFolder + "Frequencies/" + str(windowSize) + "_" + str(windowIndex) + ".csv"
 
     if os.path.isfile(frequenciesPerLocusPath):
         # file exists
