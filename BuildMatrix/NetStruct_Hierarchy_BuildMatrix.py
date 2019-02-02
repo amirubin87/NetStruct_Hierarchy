@@ -24,7 +24,8 @@ import sys
 import os
 import csv
 import datetime
-from random import shuffle, random
+from random import shuffle
+import random
 
 
 #********************************************************************
@@ -407,4 +408,4 @@ def mergeMatrixsRandomly(outputPath,distancesFolder,windowSize,numOfWindowsToGro
                         oldD = m[i][(i+1)+j]
                         # the first entry in each line is the distance between i and i+1
                         m[i][(i+1)+j] =  oldD + d
-    writeDistancesToFile(m,totalCount,outputPath)
+    writeDistancesToFile(m, outputPath)
