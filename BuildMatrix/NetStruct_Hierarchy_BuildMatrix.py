@@ -78,19 +78,21 @@ def writeToLog(msg, logPath):
 #********************************************************************
 #********************************************************************
 
-def writeDistancesToFile(distances,output):
+def writeDistancesToFile(distances, totalCount, output):
     numOfIndividuals = len(distances.keys())
     makeDirs(output)
     with open(output, "w") as f:
-        for i in range(0, numOfIndividuals):
+        for i in range(0, numOfIndividuals-1):
             for j in range(i+1, numOfIndividuals):
-                f.write(str(distances.get(i).get(j))+',')
+                f.write(str(float(distances.get(i).get(j))/totalCount)+',')
             f.write('\n')
 
 def writeCountsToFile(defaultAmount,counts,countsPath):
     makeDirs(countsPath)
     with open(countsPath, "w") as f:
         f.write('DefaultAmountOfSnps ' + str(defaultAmount) + '\n')
+        f.write('If there are missing values, they will be listed below in the following format: \n')
+        f.write('<index of first individual>,<index of second individual>,<# of valid snps>\n')
         for i in counts.keys():
             for j in counts.get(i).keys():
                 f.write(str(i)+','+str(j)+','+str(counts.get(i).get(j))+'\n')
@@ -130,7 +132,7 @@ def nonMissingEntiresAtLocus(frequenciesPerLocus, l):
 # The data in the @randomIndexListFile should be the output of buildShuffledArray(TotalSnps).
 # To run on a single machine use @windowSize=TotalSnps and @windowIndex=0.
 #********************************************************************
-def readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnps, totalIndividuals, allelesString, alleleMissingValueChar):
+def readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnps, totalIndividuals, allelesString, alleleMissingValueChar, binaryMode, pivoted):
     startIndex = windowSize*windowIndex
     endIndex = windowSize*(windowIndex+1)
     if startIndex >= totalSnps :
@@ -151,13 +153,15 @@ def readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnp
     for indi in range(0,totalIndividuals):
         window[indi] = dict()
 
-
-    return ExtractWindow(allelesToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar)
+    if pivoted:
+        return ExtractWindowPivoted(allelesToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar, binaryMode)
+    else:
+        return ExtractWindow(allelesToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar, binaryMode)
 
 #********************************************************************
 # Extracting the window when the input schema is: in each line i we have all of the alleles of individual i.
 #********************************************************************
-def ExtractWindowPivoted(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar):
+def ExtractWindowPivoted(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar,binaryMode):
     alleleSymbols = allelesString.split(',')
     fp = open(inputFile, 'r')
     lociCounter = 0
@@ -165,14 +169,28 @@ def ExtractWindowPivoted(allelsToUse, inputFile, totalIndividuals, window, allel
         if i in allelsToUse:
             parts = line.split()
             for indi in range(0, totalIndividuals):
-                alleles = parts[indi].split(',')
-                # missing value                
-                if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):
-                    val1 = -1
-                    val2 = -1
+                if binaryMode:  
+                        if parts[indi]=='1':
+                            val1=1
+                            val2=0
+                        elif parts[indi]=='2':
+                            val1=1
+                            val2=1
+                        elif parts[indi]=='0':
+                            val1=0
+                            val2=0
+                        else:
+                            val1=-1
+                            val2=-1
                 else:
-                    val1 = alleleSymbols.index(alleles[0])
-                    val2 = alleleSymbols.index(alleles[1])
+                    alleles = parts[indi].split(',')
+                    # missing value                
+                    if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):
+                        val1 = -1
+                        val2 = -1
+                    else:
+                        val1 = alleleSymbols.index(alleles[0])
+                        val2 = alleleSymbols.index(alleles[1])
                 window[indi][lociCounter] = [val1, val2]
             lociCounter = lociCounter + 1
     fp.close()
@@ -181,23 +199,37 @@ def ExtractWindowPivoted(allelsToUse, inputFile, totalIndividuals, window, allel
 #********************************************************************
 # Extracting the window when the input schema is: in each line i we have all of the individuals alleles at loci i.
 #********************************************************************
-def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar):
-    alleleSymbols = allelesString.split(',')
+def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar,binaryMode):
+    alleleSymbols = allelesString.split(',')    
     fp = open(inputFile, 'r')
     for indi, line in enumerate(fp):
         if len(line)>2:
-            parts = line.split()
-            for i in range(len(parts)):
-                if i in allelsToUse:
-                    alleles = parts[i].split(',')
-                    # missing value
-                    if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):
-                        val1 = -1
-                        val2 = -1
+            loci = line.split()
+            for l in range(len(loci)):                
+                if l in allelsToUse:
+                    if binaryMode:  
+                        if loci[l]=='1':
+                            val1=1
+                            val2=0
+                        elif loci[l]=='2':
+                            val1=1
+                            val2=1
+                        elif loci[l]=='0':
+                            val1=0
+                            val2=0
+                        else:
+                            val1=-1
+                            val2=-1
                     else:
-                        val1 = alleleSymbols.index(alleles[0])
-                        val2 = alleleSymbols.index(alleles[1])
-                    window[indi][i] = [val1, val2]                
+                        alleles = loci[l].split(',')
+                        # missing value
+                        if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):
+                            val1 = -1
+                            val2 = -1
+                        else:
+                            val1 = alleleSymbols.index(alleles[0])
+                            val2 = alleleSymbols.index(alleles[1])
+                    window[indi][l] = [val1, val2]                
     fp.close()
     return window
 
@@ -303,19 +335,30 @@ def main(inputVector):
     outputFolder = inputVector[2]
     totalSnps = int(inputVector[3])
     totalIndividuals = int(inputVector[4])
-    allelesString = inputVector[5] #"ATCG" #"0123"
-    alleleMissingValueChar = inputVector[6] #'N' #4
+    allelesString = inputVector[5] #"A,T,C,G"
+    alleleMissingValueChar = inputVector[6] #'N'
+    
+    binaryMode= False
+    if len(inputVector)>7:
+        binaryMode = bool(inputVector[7])
+    if binaryMode:
+        allelesString='0,1'
+        alleleMissingValueChar='-'
+
+    pivoted= False
+    if len(inputVector)>8:
+        pivoted = bool(inputVector[8])
 
     # for parallel execution
     shuffeledFile = ""
     windowSize = totalSnps
     windowIndex = 0
-    if len(inputVector)>7:
-        windowSize = int(inputVector[7])
-    if len(inputVector)>8:
-        windowIndex = int(inputVector[8])
     if len(inputVector)>9:
-        shuffeledFile = inputVector[9]
+        windowSize = int(inputVector[9])
+    if len(inputVector)>10:
+        windowIndex = int(inputVector[10])
+    if len(inputVector)>11:
+        shuffeledFile = inputVector[11]
 
 
     '''# can be used for adhoc runs
@@ -342,8 +385,7 @@ def main(inputVector):
         # file exists
         writeToLog("file exist, exit.", logFile)
         return
-
-    window =readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnps, totalIndividuals, allelesString, alleleMissingValueChar)
+    window =readRandomWindow(inputFile, windowSize, windowIndex, shuffeledFile, totalSnps, totalIndividuals, allelesString, alleleMissingValueChar, binaryMode, pivoted)
 
     # Step A - frequencies per locus.
     # For DR reasons - we check if the file exists.
@@ -360,7 +402,9 @@ def main(inputVector):
     # Step B - distances between individuals
     distances,counts = calcDistances(window,frequenciesPerLocus, logFile)
 
-    writeDistancesToFile(distances,distancesPath)
+    # this version does not support the option to divided each distance by the amount of valid snps.
+    # in case you have many invalid entires in your data, it may influence the result.
+    writeDistancesToFile(distances,len(list(window.values())[0].keys()),distancesPath)
     writeCountsToFile(len(list(window.values())[0].keys()),counts,countsPath)
 
 if __name__ == "__main__":
@@ -408,4 +452,9 @@ def mergeMatrixsRandomly(outputPath,distancesFolder,windowSize,numOfWindowsToGro
                         oldD = m[i][(i+1)+j]
                         # the first entry in each line is the distance between i and i+1
                         m[i][(i+1)+j] =  oldD + d
-    writeDistancesToFile(m, outputPath)
+    writeDistancesToFile(m, totalCount, outputPath)
+
+#python ./NetStruct_Hierarchy_BuildMatrix.py ./SampleInputGenes.txt ./sample/ 3 4 A,B,C,D,T,G N
+#python ./NetStruct_Hierarchy_BuildMatrix.py ./SampleInputGenesBinary.txt ./sample/ 4 3 notUsed NotUsed True True
+#python ./NetStruct_Hierarchy_BuildMatrix.py ./Sample_Arabidopsis_20_ind_10k_snps.tsv ./Sample_Arabidopsis/ 10000 20 notUsed NotUsed True True
+#java -jar NetStruct_Hierarchy_v1.jar -pro ./BuildMatrix/Arabidopsis/ -pm ./BuildMatrix/Arabidopsis/Matrix10000_0.csv -pmn ./BuildMatrix/Arabidopsis/ind2sampleSite.txt -pss ./BuildMatrix/Arabidopsis/sampleSites.txt -minb 9 -mino 9 -ss 0.001
