@@ -110,6 +110,11 @@ public class NetStruct_Hierarchy {
 		if(!(new File(pathToMatrixFile).exists())){
 			inputAsMatrix = false;
 		}
+		
+		if (Files.exists(Paths.get(pathToRootOutputDir))) {
+			throw new RuntimeException("The output directory supplied already exist, please change it to a non existing folder. Directory is: " + pathToRootOutputDir);
+		}
+		
 		new File(pathToRootOutputDir).mkdirs();
 		int firstLevel = 0;
 		int firstEntry = 0;
@@ -148,10 +153,9 @@ public class NetStruct_Hierarchy {
 		Common.writeToLog(pathToLog, "------------------\n",debug);
 		Common.writeToLog(pathToLog, "Input file" + inputFileName + "\n",debug);			
 		String pathToOutputDir = pathToRootOutputDir;
-		if(!skipBrakeComms){
-			pathToOutputDir = pathToRootOutputDir + inputFileName +"/";
-		}
+	
 		new File(pathToOutputDir).mkdirs();
+		
 		// The first comm is a single one containing all nodes.
 		CommId rootComm = new CommId(pathToOutputDir,firstLevel,firstEntry, firstLine);
 		double minThresholdToUse;
@@ -162,7 +166,7 @@ public class NetStruct_Hierarchy {
 			minThresholdToUse = minAndMaxEdgesWeights[0] + stepSize;
 			maxThresholdToUse = minAndMaxEdgesWeights[1];				
 			Common.writeToLog(pathToLog, "\t\tFirst level inputs created.\n",debug);						
-			pathToCommAnalysisFile = pathToOutputDir + "1_CommAnalysis_" + inputFileName + "_dynamic-" + dynamicChoose + "_modularity-" + useModularityAsDefaultMetric + "_minCommBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";
+			pathToCommAnalysisFile = pathToOutputDir + "1_CommAnalysis_dynamic-" + dynamicChoose + "_modularity-" + useModularityAsDefaultMetric + "_minCommBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";
 			List<CommId> firstLevelComms = new LinkedList<CommId> ();
 			firstLevelComms.add(rootComm);
 			
@@ -196,7 +200,7 @@ public class NetStruct_Hierarchy {
 		/*
 		 * 				3
 		 *  Merge the comms, using chi-squere test.
-		 *  TODO - when !@skipBrakeComms, we hold in @comms all comms, including those smaller than @minCommSizrToOutput.
+		 *  TODO - when !@skipBrakeComms, we hold in @comms all comms, including those smaller than @minCommSizeToOutput.
 		 *  We dont need to check them for merge, as they wont be outputed...
 		 */
 		/* String pathToMergedCommAnalysisFile = pathToOutputDir + "3_MergedCommAnalysis_" + inputFileName + "_dynamicChoose-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfCommToBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";			
