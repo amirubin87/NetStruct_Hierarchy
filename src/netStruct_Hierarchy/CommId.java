@@ -34,8 +34,8 @@ public class CommId {
 		this.th = th;
 		this.parentComm = parentComm;
 		this.size = -1; 
-		this.edgesFileName = generateFileName("Edges");
-		this.commsFileName = generateFileName("Comms");
+		this.edgesFileName = generateFileName("E");
+		this.commsFileName = generateFileName("C");
 	}
 	
 	public CommId(String pathToWorkingDir, int level, int entry, int line){
@@ -46,8 +46,8 @@ public class CommId {
 		this.metricUsed = "NotSet";		
 		this.childComms = new ArrayList<>();
 		// These wont be changed, regardless of any future change in parent comm.
-		this.edgesFileName = generateFileName("Edges");
-		this.commsFileName = generateFileName("Comms");
+		this.edgesFileName = generateFileName("E");
+		this.commsFileName = generateFileName("C");
 		this.leafs = new HashMap<CommId, Double>();
 		this.size=-1;
 	}
@@ -60,9 +60,8 @@ public class CommId {
 	}
 	private String generateFileName(String type) {
 		if (parentComm == null)
-			return pathToWorkingDir + "Level_" + level + "_Entry_" + entry + "_TH_" + th + "_" + type + ".txt";
-		//*** return pathToWorkingDir + "Level_" + level + "_Entry_" + entry + "_ParentEntry_" + parentComm.entry + "_ParentLine_" + parentComm.line + "_TH_" + th + "_" + type + ".txt";
-		return pathToWorkingDir + "Level_" + level + "_Entry_" + entry + "_ParentLevel_" + parentComm.level + "_ParentEntry_" + parentComm.entry + "_ParentLine_" + parentComm.line + "_TH_" + th + "_" + type + ".txt";
+			return pathToWorkingDir + "Le_" + level + "_En_" + entry + "_TH_" + String.format("%1$,.7f", th) + "_" + type + ".txt";
+		return pathToWorkingDir + "Le_" + level + "_En_" + entry + "_PaLe_" + parentComm.level + "_PaEn_" + parentComm.entry + "_PaLi_" + parentComm.line + "_TH_" + String.format("%1$,.7f", th) + "_" + type + ".txt";
 	}
 	
 	public Set<Integer> GetNodes() throws IOException{

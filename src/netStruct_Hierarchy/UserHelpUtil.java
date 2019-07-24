@@ -50,8 +50,8 @@ public class UserHelpUtil {
 			+ "6_Leafs_WithOverlap.txt -\n\t\t Leafs found in the MERGED tree. Dropped individuals are assigned to a all leafs under the node in which they appear.\n"
 			*/
 			+ "log_<@matrixFileName>_<HH-mm_d--MM-YYYY>.log -\n\t\t log of the process.\n"
-			+ "Level_#_Entry_#_ParentLevel_#_ParentEntry_#_ParentLine_#_TH__Comms.txt -\n\t\t a list of comms in the given level and entry.\n"
-			+ "Level_#_Entry_#_ParentLevel_#_ParentEntry_#_ParentLine_#_TH__Edges.txt -\n\t\t a list of edges in the given level and entry.\n"
+			+ "Le_#_En_#_PaLe_#_PaEn_#_PaLi_#_TH__C.txt -\n\t\t a list of comms in the given level and entry.\n"
+			+ "Le_#_En_#_PaLe_#_PaEn_#_PaLi_#_TH__E.txt -\n\t\t a list of edges in the given level and entry.\n"
 			;
 	public final static String paramMsg = 
 			"******************************************\n"

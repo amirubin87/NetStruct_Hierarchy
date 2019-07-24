@@ -49,8 +49,13 @@ public class Common {
 	    }
 	}
 	
-	public static void renameFile(String pathToFile){
+	public static void renameFile(String pathToFile) throws Exception {
 		String newName = pathToFile + "renamed.txt";
+		// Note that as we add "renamed.txt" each time we fail, we will have no more than 21 attempts
+		if(newName.length()>260)
+		{
+			throw new Exception("File path is too long, max is 260, got " + newName.length() + ". Path: " + newName);
+		}
 		if(!(new File(pathToFile)).renameTo(new File(newName))){
 			renameFile(newName);	
 			renameFile(pathToFile);

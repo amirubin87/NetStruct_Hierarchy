@@ -84,7 +84,11 @@ public class NetStruct_Hierarchy {
 			useModularityAsDefaultMetric = true;
 		}
 		if(!skipBrakeComms){
-			pathToRootOutputDir = pathToRootOutputDir+"Weighted_" + useWeighted + "_Dynamic_" + dynamicChoose + "_minSize_" + minSizeOfCommToBrake + "_StepSize_" + stepSize + "_Beta_" + beta +  "/";
+			pathToRootOutputDir = pathToRootOutputDir+"W_" + (useWeighted ? 1 : 0) + "_D_" + (dynamicChoose ? 1 : 0) + "_Min_" + minSizeOfCommToBrake + "_SS_" + stepSize + "_B_" + beta +  "/";
+			if (pathToRootOutputDir.length()>100)
+			{
+				throw new Exception("Output path is too long, max is 100, got " + pathToRootOutputDir.length() + ". The reason for this limitation is the fact that in some OS (like Windows) there is a limitation on the path of a file. NetStruct_Hierarchy write files with relativly long names, and so we limit the output folder path to 100. Sorry for that...");
+			}
 		}
 		if(dummy){			
 			stepSize = 0.01;			
@@ -158,7 +162,7 @@ public class NetStruct_Hierarchy {
 			minThresholdToUse = minAndMaxEdgesWeights[0] + stepSize;
 			maxThresholdToUse = minAndMaxEdgesWeights[1];				
 			Common.writeToLog(pathToLog, "\t\tFirst level inputs created.\n",debug);						
-			pathToCommAnalysisFile = pathToOutputDir + "1_CommAnalysis_" + inputFileName + "_dynamicChoose-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfCommToBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";
+			pathToCommAnalysisFile = pathToOutputDir + "1_CommAnalysis_" + inputFileName + "_dynamic-" + dynamicChoose + "_modularity-" + useModularityAsDefaultMetric + "_minCommBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";
 			List<CommId> firstLevelComms = new LinkedList<CommId> ();
 			firstLevelComms.add(rootComm);
 			
