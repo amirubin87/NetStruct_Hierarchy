@@ -221,10 +221,12 @@ def ExtractWindowPivoted(allelsToUse, inputFile, totalIndividuals, window, allel
 #********************************************************************
 # Extracting the window when the input schema is: in each line i we have all of the individuals alleles at loci i.
 #********************************************************************
-def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar,binaryMode):
+def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesString, alleleMissingValueChar,binaryMode):    
     alleleSymbols = allelesString.split(',')    
     fp = open(inputFile, 'r')
+    line_counter=0
     for indi, line in enumerate(fp):
+        line_counter+=1
         if len(line)>2:
             loci = line.split()
             for l in range(len(loci)):                
@@ -239,13 +241,16 @@ def ExtractWindow(allelsToUse, inputFile, totalIndividuals, window, allelesStrin
                         elif loci[l]=='0':
                             val1=0
                             val2=0
-                        else:
+                        elif loci[l]=='-':
                             val1=-1
                             val2=-1
+                        else:
+                            error_msg = 'ERROR - you are running in binary mode, and there is a value which isnt one of 0,1,2,-. Perhaps you forgat to set binaryMode to False?.\n At line ' + str(line_counter) + ', column ' +str(l) +', value is ' + loci[l]
+                            raise ValueError(error_msg)
                     else:
                         alleles = loci[l].split(',')
                         # missing value
-                        if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):
+                        if (alleles[0] == alleleMissingValueChar) or (alleles[1] == alleleMissingValueChar):                            
                             val1 = -1
                             val2 = -1
                         else:
@@ -348,9 +353,10 @@ def calcDistances(window, frequenciesPerLocus, logFile):
 #********************************************************************
 
 def main(inputVector):
-    if len(inputVector)<7:
-        print ("Required input is: inputFile outputFolder totalSnps totalIndividuals allelesString alleleMissingValueChar")        
-        print ("Non mandatory parameters: binaryMode pivoted windowSize windowIndex shuffeledFile")
+    if len(inputVector)<6:
+        print ("Required parameters: inputFile outputFolder totalSnps totalIndividuals binaryMode.")
+        print ("If binaryMode is false, additional required parameters: allelesString alleleMissingValueChar.")        
+        print ("Non mandatory parameters: pivoted windowSize windowIndex shuffeledFile.")
         return
     # parse command line options
 
@@ -358,15 +364,23 @@ def main(inputVector):
     outputFolder = inputVector[2]
     totalSnps = int(inputVector[3])
     totalIndividuals = int(inputVector[4])
-    allelesString = inputVector[5] #"A,T,C,G"
-    alleleMissingValueChar = inputVector[6] #'N'
     
-    binaryMode= False
-    if len(inputVector)>7:
-        binaryMode = bool(inputVector[7])
+    if inputVector[5]=='True':
+        binaryMode = True
+    elif inputVector[5]=='False':
+        binaryMode = False
+    else:
+        raise ValueError('binaryMode must be "True" or "False"')
+
     if binaryMode:
         allelesString='0,1,2'
         alleleMissingValueChar='-'
+    else:
+        if len(inputVector)<=7:
+            raise 'When binaryMode is false, you must supply allelesString and alleleMissingValueChar'
+        else:
+            allelesString = inputVector[6] #"A,T,C,G"
+            alleleMissingValueChar = inputVector[7] #'N'
 
     pivoted= False
     if len(inputVector)>8:
@@ -392,11 +406,13 @@ def main(inputVector):
     shuffeledFile = ""
     totalSnps = 3
     totalIndividuals = 4
+    binaryMode = False
     # each character in the string is a symbol of an allele in the input data
-    allelesString = 'A,B,C,D,T,G'
+    allelesString = 'A,B,C,D,T,G,XYZ'
     # a single character to represent a missing value
     alleleMissingValueChar = 'N'
-    '''
+    pivoted = False'''
+    
 
     #First check that the output file doesnt exist.
     distancesPath = outputFolder + "Distances/Matrix" + str(windowSize) + "_" + str(windowIndex) + ".csv"

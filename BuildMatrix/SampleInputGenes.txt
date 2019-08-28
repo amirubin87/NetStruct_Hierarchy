@@ -1,4 +1,4 @@
-A,B A,A C,G
+A,B A,A C,XYZ
 A,T A,B A,A
 A,D A,T C,B
 A,D N,C A,D
