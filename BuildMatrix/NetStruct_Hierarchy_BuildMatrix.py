@@ -408,7 +408,7 @@ def main(inputVector):
     totalIndividuals = 4
     binaryMode = False
     # each character in the string is a symbol of an allele in the input data
-    allelesString = 'A,B,C,D,T,G,XYZ'
+    allelesString = 'A,C,T,G,XYZ'
     # a single character to represent a missing value
     alleleMissingValueChar = 'N'
     pivoted = False'''
