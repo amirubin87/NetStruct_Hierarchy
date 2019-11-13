@@ -12,12 +12,11 @@ parmas:
     outputFolder - path to folder in which we write outputs
     totalSnps - the number of snps in the inputFile
     totalIndividuals - the number of individuals in the inputFile
+    binaryMode - if true, input is 0,1 or 2. 0 is mapped to 00, 1 is mapped to 10, and 2 is mapped to 11.
     allelesString - comma seperated symbols. Each symbol in the string is a symbol of an allele in the input data
     alleleMissingValueChar - the character representing a missing value
 
-
     *** Non mandatory parameters *** 
-    binaryMode - if true, input is 0,1 or 2. 0 is mapped to 00, 1 is mapped to 10, and 2 is mapped to 11.
     pivoted - if true each line represents a loci. Alleles in this loci of all individuals are listed in each line.
           If false, each line represents an individual.
 
@@ -28,13 +27,13 @@ parmas:
 
 Sample executions:
 Run on small dummy (ACTG) input
-    python ./NetStruct_Hierarchy_BuildMatrix.py ./SampleInputGenes.txt ./sample/ 3 4 A,B,C,D,T,G N
+    python ./NetStruct_Hierarchy_BuildMatrix.py ./SampleInputGenes.txt ./sample/ 3 4 False A,B,C,D,T,G,XYZ N
 
 Run on small dummy (binary, pivoted) input
-    python ./NetStruct_Hierarchy_BuildMatrix.py ./SampleInputGenesBinary.txt ./sample/ 4 3 notUsed NotUsed True True
+    python ./NetStruct_Hierarchy_BuildMatrix.py ./SampleInputGenesBinary.txt ./sample/ 4 3 True notUsed NotUsed True
 
 Run on a small Arabidopsis data with 20 individuals and 10k snps in a binary format, pivoted
-    python ./NetStruct_Hierarchy_BuildMatrix.py ./Sample_Arabidopsis_20_ind_10k_snps.tsv ./Sample_Arabidopsis/ 10000 20 notUsed NotUsed True True
+    python ./NetStruct_Hierarchy_BuildMatrix.py ./Sample_Arabidopsis_20_ind_10k_snps.tsv ./Sample_Arabidopsis/ 10000 20 True notUsed NotUsed True
 Referring to the last run, you can execute NetStruct_Hierarchy_v1 on the output:
 Cd to parent dir, where the jar is located and run
     java -jar NetStruct_Hierarchy_v1.jar -pro ./BuildMatrix/Sample_Arabidopsis/ -pm ./BuildMatrix/Sample_Arabidopsis/Distances/Matrix10000_0.csv -pmn ./BuildMatrix/Sample_Arabidopsis/ind2SampleSite.txt -pss ./BuildMatrix/Sample_Arabidopsis/SampleSites.txt -minb 9 -mino 9 -ss 0.001
