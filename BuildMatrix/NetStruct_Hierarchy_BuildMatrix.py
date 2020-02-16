@@ -1,4 +1,4 @@
-__author__ = 't-amirub'
+__author__ = 'Amir Rubin'
 '''
 This script generates a matrix of distances for a selected window of random entries.
 
