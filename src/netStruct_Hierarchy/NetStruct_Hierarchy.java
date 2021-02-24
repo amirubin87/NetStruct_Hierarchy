@@ -21,19 +21,19 @@ public class NetStruct_Hierarchy {
 	static boolean dummy = false;
 	static String[] varFlags = {"-ss","-dy","-mod","-minb","-mino","-b","-pro","-skip","-pca","-pm","-pe","-pmn","-pss","-nvl","-w","-ls","-pts","-indtoex"};
 	static String[] varValues = 
-		{"0.0001",
+		{"0.001",
 		"false",
 		"true",
-		"3",
-		"3",
+		"5",
+		"5",
 		"1.0",
-		"C:/Data/",
+		"C:/Data/HUJI/vcf/hgdp/NetSH/",
 		"false",
 		"",
-		"C:/Data/Matrix.txt",
+		"C:/Data/HUJI/vcf/hgdp/merged/merged_norm_dist_mac_1_0_maf_49_49.gz.tsv",
 		"",
-		"C:/Data/indlist.csv",
-		"C:/Data/SampleSites.txt",
+		"C:/Data/HUJI/vcf/hgdp/indlist.csv",
+		"C:/Data/HUJI/vcf/hgdp/SampleSites.txt",
 		"0",
 		"true",
 		"false",
@@ -151,7 +151,7 @@ public class NetStruct_Hierarchy {
 		
 		Common.writeToLog(pathToLog, "------------------\n",debug);
 		Common.writeToLog(pathToLog, "------------------\n",debug);
-		Common.writeToLog(pathToLog, "Input file" + inputFileName + "\n",debug);			
+		Common.writeToLog(pathToLog, "Input file: " + inputFileName + "\n",debug);			
 		String pathToOutputDir = pathToRootOutputDir;
 	
 		new File(pathToOutputDir).mkdirs();

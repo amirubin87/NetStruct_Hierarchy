@@ -35,12 +35,12 @@ public class Common {
 
 	public static String getDate(){
 		Date now = new Date();
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("hh-mm_dd-MM-y");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm dd-MM-y");
         return dateFormatter.format(now);	
 	}
 	
 	public static void writeToLog(String pathToLog, String msg, boolean debug) throws IOException{		
-		String msgWithTime  = getDate() + " : " + msg;
+		String msgWithTime  = getDate() + ": " + msg;
 	    System.out.println(msgWithTime);
 	    if (!debug){   
 			Path path = Paths.get(pathToLog);
