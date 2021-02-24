@@ -162,6 +162,7 @@ public class NetStruct_Hierarchy {
 		double maxThresholdToUse;
 		List<CommId> comms;
 		if(!skipBrakeComms){
+			// This will convert the input to the expected format
 			double[] minAndMaxEdgesWeights = TextConvertor.createInputs(inputAsMatrix, pathToMatrixFile, pathToEdgesFile, rootComm.edgesFileName, rootComm.commsFileName, individulasToExclude);
 			minThresholdToUse = minAndMaxEdgesWeights[0] + stepSize;
 			maxThresholdToUse = minAndMaxEdgesWeights[1];				
@@ -196,47 +197,6 @@ public class NetStruct_Hierarchy {
 		commAnalyzer.WriteLeafsNoOverlapAsCommunitiesToFile(pathToLeafsBeforeMergeNoOverlapFile);
 		commAnalyzer.WriteLeafsWithOverlapAsCommunitiesToFile(pathToLeafsBeforeMergeWithOverlapFile);
 		Common.writeToLog(pathToLog, "\t\tDone with Write Leafs As Communities To File\n",debug);
-						
-		/*
-		 * 				3
-		 *  Merge the comms, using chi-squere test.
-		 *  TODO - when !@skipBrakeComms, we hold in @comms all comms, including those smaller than @minCommSizeToOutput.
-		 *  We dont need to check them for merge, as they wont be outputed...
-		 */
-		/* String pathToMergedCommAnalysisFile = pathToOutputDir + "3_MergedCommAnalysis_" + inputFileName + "_dynamicChoose-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfCommToBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";			
-			
-		Common.writeToLog(pathToLog, "\t\tDone with CommsToMapCodeToCount\n",debug);
-		Map<CommId,Map<String,Integer>> mapMergedCommToMapCodeToCount = MergeComms.MergeCommsByPVal(rootComm, mapCommToMapCodeToCount, 0.05);
-		Common.writeToLog(pathToLog, "\t\tDone with MergeCommsByPVal.\n",debug);
-		commAnalyzer.WriteCommAnalysisToFile(mapMergedCommToMapCodeToCount, pathToMergedCommAnalysisFile);
-		Common.writeToLog(pathToLog, "\t\tDone with WriteCommAnalysisToFile. Output: " + pathToMergedCommAnalysisFile +"\n",debug);
-		*/
-		// Calculate F1 score between the sample sites.
-		
-		/*Map<String, SampleSite> sampleSites = commAnalyzer.InitSampleSites();
-		Common.writeToLog(pathToLog, "\t\tDone with InitSampleSites\n",debug);
-		commAnalyzer.SetPathFromRootToAll(sampleSites, mapMergedCommToMapCodeToCount.keySet());
-		Common.writeToLog(pathToLog, "\t\tDone with SetPathFromRootToAll\n",debug);
-		Map<String,Map<String, Double>> f1ScoreMatrix = commAnalyzer.CalcF1ScoresMatrix(sampleSites);
-		String pathToF1ScoreMatrixFile = pathToOutputDir + "4_F1ScoreMatrix_" + inputFileName + "_dynamicChoose-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfCommToBrake-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";
-		commAnalyzer.WriteF1ScoreMatrixToFile(f1ScoreMatrix, pathToF1ScoreMatrixFile);
-		Common.writeToLog(pathToLog, "\t\tDone with WriteF1ScoreMatrixToFile: " + pathToF1ScoreMatrixFile +"\n",debug); 
-		
-		// Build structure output
-		String pathToStructureFile = pathToOutputDir + "5_Structure_LeafSizes-" + useLeafSizesForStructure + "_proportional-" + useProportionalTreeSplitsForStructure +"_"+ inputFileName + "_dynamic-" + dynamicChoose + "_useModularity-" + useModularityAsDefaultMetric + "_minSizeOfComm-" +minSizeOfCommToBrake +"_"+ stepSize + ".txt";
-		commAnalyzer.WriteStructureOutputToFile(rootComm, mapMergedCommToMapCodeToCount.keySet(), pathToStructureFile, minSizeOfCommToOutput, useLeafSizesForStructure, useProportionalTreeSplitsForStructure);
-		Common.writeToLog(pathToLog, "\t\tDone with WriteStructureOutputToFile: " + pathToStructureFile +"\n",debug);
-		*/
-		
-		// Output leafs for NMI - commAnalyzer holds all the data needed - it was calculated in WriteStructureOutputToFile  
-		/*String pathToLeafsNoOverlapFile = pathToOutputDir + "6_Leafs_NoOverlap.txt";
-		String pathToLeafsWithOverlapFile = pathToOutputDir + "6_Leafs_WithOverlap.txt";
-		commAnalyzer.LeafsAsCommunities();		
-		commAnalyzer.WriteLeafsNoOverlapAsCommunitiesToFile(pathToLeafsNoOverlapFile);
-		commAnalyzer.WriteLeafsWithOverlapAsCommunitiesToFile(pathToLeafsWithOverlapFile);
-		Common.writeToLog(pathToLog, "\t\tDone with WriteLeaf AfterMerge AsCommunitiesToFile\n",debug);
-		*/
-				
 	}
 
 	private static void deleteDirectory(String dir) throws IOException {
@@ -274,6 +234,4 @@ public class NetStruct_Hierarchy {
 			if(!foundFlag) throw new InputMismatchException("Bad input for NetStruct_Tree. The flag:"+flag + " is not found. Use -h to see available flags.");
 		}		
 	}
-	
-	
 }
