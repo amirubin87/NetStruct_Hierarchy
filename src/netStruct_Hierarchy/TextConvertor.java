@@ -116,7 +116,7 @@ public class TextConvertor {
 		double maxEdgeWeight = Double.MIN_VALUE;
 		List<String> lines = null;
 		// Adding support to gz format files
-		if (pathToMatrix.contains(".gz.")){
+		if (pathToMatrix.endsWith(".gz")){
 			lines = readAllLinesFromGzipFile(pathToMatrix);
 		}
 		else{
@@ -160,7 +160,7 @@ public class TextConvertor {
 		Set<Integer> nodes = new HashSet<>();
 		List<String> edges = null;
 		// Adding support to gz format files
-		if (pathToEdgesFile.contains(".gz.")){
+		if (pathToEdgesFile.endsWith(".gz")){
 			edges = readAllLinesFromGzipFile(pathToEdgesFile);
 		}
 		else{

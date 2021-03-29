@@ -35,11 +35,11 @@ public class Common {
 
 	public static String getDate(){
 		Date now = new Date();
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm dd-MM-y");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("hh_mm dd-MM-y");
         return dateFormatter.format(now);	
 	}
 	
-	public static void writeToLog(String pathToLog, String msg, boolean debug) throws IOException{		
+	public static void writeToLog(String pathToLog, String msg, boolean debug) throws IOException{
 		String msgWithTime  = getDate() + ": " + msg;
 	    System.out.println(msgWithTime);
 	    if (!debug){   

@@ -64,34 +64,41 @@ public class NetStruct_Hierarchy {
 		int minSizeOfCommToBrake =  Integer.parseInt(varValues[3]);
 		int minSizeOfCommToOutput =  Integer.parseInt(varValues[4]);
 		String beta = varValues[5];
-		String pathToRootOutputDir = varValues[6];  
-		boolean skipBrakeComms =  Boolean.parseBoolean(varValues[7]); 
-		String pathToCommAnalysisFile =  varValues[8]; 	
-		String pathToMatrixFile = varValues[9];		
-		String pathToEdgesFile = varValues[10];	
-		
-		
+		String pathToRootOutputDir = varValues[6];
+		boolean skipBrakeComms =  Boolean.parseBoolean(varValues[7]);
+		String pathToCommAnalysisFile =  varValues[8];
+		String pathToMatrixFile = varValues[9];
+		String pathToEdgesFile = varValues[10];
+
+
 		String pathToMapNode2SampleSite = varValues[11];
-		String pathToSampleSites = varValues[12];		
+		String pathToSampleSites = varValues[12];
 		int nectarVerboseLevel = Integer.parseInt(varValues[13]);
 		boolean useWeighted = Boolean.parseBoolean(varValues[14]);
 		boolean useLeafSizesForStructure = Boolean.parseBoolean(varValues[15]);
 		boolean useProportionalTreeSplitsForStructure = Boolean.parseBoolean(varValues[16]);
 		String pathToIndividulasToExclude = varValues[17];
-		
+		// In windows there is a limit to the length of a file path, so when running in windoes set this to true.
+		boolean limitPathToRootOutputDir = false;
+		if (varValues.length > 18)
+		{
+			limitPathToRootOutputDir = Boolean.parseBoolean(varValues[18]);
+		}
+
+
 		if(useWeighted){
 			dynamicChoose = false;
 			useModularityAsDefaultMetric = true;
 		}
 		if(!skipBrakeComms){
 			pathToRootOutputDir = pathToRootOutputDir+"W_" + (useWeighted ? 1 : 0) + "_D_" + (dynamicChoose ? 1 : 0) + "_Min_" + minSizeOfCommToBrake + "_SS_" + stepSize + "_B_" + beta +  "/";
-			if (pathToRootOutputDir.length()>100)
+			if (limitPathToRootOutputDir && pathToRootOutputDir.length()>100)
 			{
 				throw new Exception("Output path is too long, max is 100, got " + pathToRootOutputDir.length() + ". The reason for this limitation is the fact that in some OS (like Windows) there is a limitation on the path of a file. NetStruct_Hierarchy write files with relativly long names, and so we limit the output folder path to 100. Sorry for that...");
 			}
 		}
-		if(dummy){			
-			stepSize = 0.01;			
+		if(dummy){
+			stepSize = 0.01;
 			pathToRootOutputDir = "./sample/DUMMYStepSize_" + stepSize + "_Beta_" + beta + "_DynamicChoose_" + dynamicChoose + "_minSizeOfCommToBrake_" + minSizeOfCommToBrake + "/";
 			deleteDirectory(pathToRootOutputDir);
 			pathToMatrixFile = "./sample/DUMMY_All_chrome_M.txt";
