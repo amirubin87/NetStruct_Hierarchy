@@ -72,7 +72,11 @@ public class NectarIntegration {
 
 	private static void runNectar(String pathToFileForNecter, String pathToWorkingDir, String betas, Boolean shouldUseModularity, int nectarVerboseLevel, boolean useWeighted) throws Exception {
 		String shouldUseModularityS = shouldUseModularity ? "true" : "false";
-		String[]args = {
+		
+		// TODO - add "minAmountOfIterationsToRun"
+		// TODO - output sorted nodes!
+		if(useWeighted){
+			String[]args = {
 				pathToFileForNecter
 				, pathToWorkingDir
 				, betas
@@ -87,12 +91,25 @@ public class NectarIntegration {
 				, "false" //useConductance
 				, "" + nectarVerboseLevel // verbose
 				};
-		// TODO - add "minAmountOfIterationsToRun"
-		// TODO - output sorted nodes!
-		if(useWeighted){
 			NECTAR_Weighted.RunNectar_Weighted.main(args);
 		}
 		else{
+			// NOTE: in NECTAR.RunNectar.main the order of useWOCC and useModularity is opposite to the above!
+			String[]args = {
+				pathToFileForNecter
+				, pathToWorkingDir
+				, betas
+				, "0.8" // alpha
+				, "5" // iteratioNumToStartMerge
+				, "20" // maxIterationsToRun
+				, "0" // firstPartMode (0=CC, 3=clique 3, 4=clique 4)
+				, "99" // percentageOfStableNodes
+				, "false" // dynamicChoose 
+				, shouldUseModularityS == "true" ? "false" : "true" // useWOCC
+				, shouldUseModularityS // useModularity
+				, "false" //useConductance
+				, "" + nectarVerboseLevel // verbose
+				};
 			NECTAR.RunNectar.main(args);
 		}
 	}
